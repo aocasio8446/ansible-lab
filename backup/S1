@@ -1,0 +1,298 @@
+Building configuration...
+
+Current configuration : 6393 bytes
+!
+! Last configuration change at 12:45:03 EST Fri Feb 28 2020
+!
+version 15.2
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+service compress-config
+!
+hostname LabSwitch
+!
+boot-start-marker
+boot-end-marker
+!
+!
+enable secret 5 $1$o5EM$sEP.MhQn8SRULH7OdGaR//
+!
+username aocasio privilege 15 secret 5 $1$W/fL$MWFGL.KFO8oodjrQQpFNy/
+username smu privilege 15 secret 5 $1$W9.j$Bo2nNKGJoBOQVX2IM6wj9.
+aaa new-model
+!
+!
+aaa authentication login test local
+aaa authentication enable default enable
+aaa authorization exec test local if-authenticated 
+!
+!
+!
+!
+!
+!
+aaa session-id common
+no process cpu extended history
+no process cpu autoprofile hog
+clock timezone EST -5 0
+clock summer-time EST recurring
+!
+!
+!
+!
+!
+vtp mode transparent
+!
+!
+!
+ip domain-name mylab.local
+ip name-server 8.8.8.8
+ip cef
+no ipv6 cef
+!
+!
+no memory lite
+spanning-tree mode pvst
+spanning-tree extend system-id
+!
+vlan internal allocation policy ascending
+!
+vlan 10
+ name FW_VLAN
+!
+vlan 15
+ name NX9k_Data_VLAN
+!
+vlan 50
+ name Inside_VLAN
+!
+vlan 55
+ name Production_VLAN
+!
+vlan 60
+ name Development_VLAN
+!
+vlan 65
+ name Engineering_VLAN
+!
+vlan 70
+ name Test_VLAN
+no cdp run
+!
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Loopback0
+ ip address 2.2.2.2 255.255.255.255
+!
+interface GigabitEthernet0/0
+ description RTR1 Interface
+ switchport access vlan 50
+ switchport mode access
+ media-type rj45
+ negotiation auto
+ no cdp enable
+ spanning-tree portfast
+!
+interface GigabitEthernet0/1
+ description RTR2 Interface
+ switchport access vlan 50
+ switchport mode access
+ media-type rj45
+ negotiation auto
+ no cdp enable
+ spanning-tree portfast
+!
+interface GigabitEthernet0/2
+ description N9k Interface E1/1
+ switchport access vlan 15
+ switchport mode access
+ media-type rj45
+ negotiation auto
+ no cdp enable
+ spanning-tree portfast
+!
+interface GigabitEthernet0/3
+ description CSR 1kv Interface G1
+ switchport access vlan 50
+ switchport mode access
+ media-type rj45
+ negotiation auto
+ no cdp enable
+ spanning-tree portfast
+!
+interface GigabitEthernet1/0
+ description Interface to ASAv G0/1
+ switchport access vlan 10
+ switchport mode access
+ media-type rj45
+ negotiation auto
+ no cdp enable
+ spanning-tree portfast
+!
+interface GigabitEthernet1/1
+ description N9kv MGMT Interface
+ switchport access vlan 50
+ switchport mode access
+ media-type rj45
+ negotiation auto
+ no cdp enable
+ spanning-tree portfast
+!
+interface GigabitEthernet1/2
+ description Ubuntu Server
+ switchport access vlan 15
+ switchport mode access
+ media-type rj45
+ negotiation auto
+ no cdp enable
+ spanning-tree portfast
+!
+interface GigabitEthernet1/3
+ description ASA Management Interface
+ switchport access vlan 15
+ switchport mode access
+ media-type rj45
+ negotiation auto
+ no cdp enable
+ spanning-tree portfast
+!
+interface GigabitEthernet2/0
+ description Exchange Server
+ switchport access vlan 55
+ switchport mode access
+ media-type rj45
+ negotiation auto
+ spanning-tree portfast
+!
+interface GigabitEthernet2/1
+ description Nessus Scanner
+ switchport access vlan 60
+ switchport mode access
+ media-type rj45
+ negotiation auto
+ spanning-tree portfast
+!
+interface GigabitEthernet2/2
+ description CAD Server
+ switchport access vlan 65
+ switchport mode access
+ media-type rj45
+ negotiation auto
+ spanning-tree portfast
+!
+interface GigabitEthernet2/3
+ media-type rj45
+ negotiation auto
+!
+interface GigabitEthernet3/0
+ switchport access vlan 50
+ switchport mode access
+ media-type rj45
+ negotiation auto
+ no cdp enable
+!
+interface GigabitEthernet3/1
+ media-type rj45
+ negotiation auto
+!
+interface GigabitEthernet3/2
+ media-type rj45
+ negotiation auto
+!
+interface GigabitEthernet3/3
+ media-type rj45
+ negotiation auto
+!
+interface Vlan10
+ description SVI to FW
+ ip flow ingress
+ ip address 192.168.10.2 255.255.255.0
+!
+interface Vlan15
+ description Data VLAN
+ ip address 192.168.15.1 255.255.255.252
+!
+interface Vlan50
+ description Inside VLAN SVI
+ ip flow ingress
+ ip address 192.168.50.254 255.255.255.0
+!
+!
+router eigrp 69
+ network 192.168.10.0
+ network 192.168.15.0
+ network 192.168.50.0
+ eigrp router-id 2.2.2.2
+!
+ip forward-protocol nd
+!
+no ip http server
+no ip http secure-server
+ip flow-export source Vlan50
+ip flow-export version 5
+ip flow-export destination 192.168.255.135 2055
+!
+!
+!
+!
+!
+!
+!
+!
+control-plane
+!
+banner exec ^CC
+**************************************************************************
+* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
+* education. IOSv is provided as-is and is not supported by Cisco's      *
+* Technical Advisory Center. Any use or disclosure, in whole or in part, *
+* of the IOSv Software or Documentation to any third party for any       *
+* purposes is expressly prohibited except as otherwise authorized by     *
+* Cisco in writing.                                                      *
+**************************************************************************^C
+banner incoming ^CC
+**************************************************************************
+* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
+* education. IOSv is provided as-is and is not supported by Cisco's      *
+* Technical Advisory Center. Any use or disclosure, in whole or in part, *
+* of the IOSv Software or Documentation to any third party for any       *
+* purposes is expressly prohibited except as otherwise authorized by     *
+* Cisco in writing.                                                      *
+**************************************************************************^C
+banner login ^CC
+**************************************************************************
+* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
+* education. IOSv is provided as-is and is not supported by Cisco's      *
+* Technical Advisory Center. Any use or disclosure, in whole or in part, *
+* of the IOSv Software or Documentation to any third party for any       *
+* purposes is expressly prohibited except as otherwise authorized by     *
+* Cisco in writing.                                                      *
+**************************************************************************^C
+!
+line con 0
+ exec-timeout 360 0
+ logging synchronous
+line aux 0
+line vty 0 4
+ exec-timeout 360 0
+ authorization exec test
+ login authentication test
+ transport input ssh
+!
+ntp source Vlan50
+ntp master
+ntp update-calendar
+ntp server 192.168.50.254
+!
+end

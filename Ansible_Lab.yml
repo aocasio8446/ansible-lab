@@ -1,0 +1,22 @@
+---
+- name: Ansible Lab Tasks
+  hosts: ios_routers
+  gather_facts: false
+  connection: local
+
+  vars:
+    cli:
+      host: "{{ ansible_host }}"
+      Username: "{{ ansible_user }}"
+      Password: "{{ ansible_ssh_pass }}"
+
+
+  tasks:
+
+      - name: Gather facts for RTR1 and RTR 2
+        ios_facts:
+        when: ansible_network_os == 'ios'
+        register: fact
+
+      - debug:
+          var: fact

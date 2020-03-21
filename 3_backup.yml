@@ -1,0 +1,14 @@
+---
+- name: Backup configuration playbook
+  hosts: all
+  gather_facts: false
+  connection: network_cli
+
+  tasks:
+
+      - name: Backup R1, R2 and S1
+        ios_config:
+           backup: yes
+           backup_options:
+             filename: "{{ inventory_hostname }}"
+             dir_path: ./backup
